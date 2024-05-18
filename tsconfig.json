@@ -27,7 +27,7 @@
       "@shared/*" : ["app/shared/*"],
       "@pipes/*": ["app/shared/modules/pipes-module/*"],
       "@services/*": ["app/shared/services/*"],
-      "@modules/*": ["app/modules/*"]
+      "@components/*": ["app/components/*"]
     }
   },
   "angularCompilerOptions": {

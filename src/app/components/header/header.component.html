@@ -1,0 +1,12 @@
+<div class="app-header">
+  <p class="title">{{title}}</p>
+  <ng-container [ngTemplateOutlet]="navBar"></ng-container>
+</div>
+
+<ng-template #navBar>
+  <div class="nav-bar">
+    @for (item of navItems; track $index) {
+      <p class="nav-bar_item" [matTooltip]="item.tooltip || ''">{{item.name}}</p>
+    }
+  </div>
+</ng-template>

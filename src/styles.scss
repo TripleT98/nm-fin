@@ -1,13 +1,15 @@
 @import "@angular/material/prebuilt-themes/indigo-pink.css";
 @import "variables.scss";
 @import "./assets/scss/material/material.scss";
+@import url('https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;500;600;700&display=swap');
 
 *{
   margin: 0;
   padding: 0;
   box-sizing: border-box;
-  font-family: Roboto;
+  font-family: 'Open Sans';
   font-size: 14px;
+  color: $text-color;
 }
 
 body{
