@@ -1,0 +1,17 @@
+@import "variables.scss";
+
+.mat-mdc-checkbox-checked{
+  .mdc-checkbox__background{
+    background-color: $text-color-hover !important;
+    border-color: $text-color-hover !important;
+  }
+}
+
+.mat-mdc-checkbox{
+  .mdc-label{
+    color: $text-color-hover;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+}

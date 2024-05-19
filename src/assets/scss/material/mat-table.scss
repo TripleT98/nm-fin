@@ -1,0 +1,20 @@
+@import "variables.scss";
+
+.mat-mdc-table.no-shadow{
+  box-shadow: none;
+}
+
+.mat-mdc-table.with-border{
+  border: 1px solid $main-color;
+}
+
+.with-border-row{
+  border-collapse: collapse;
+  tbody{
+    border: 1px solid $main-color;
+  }
+}
+
+.mat-mdc-header-cell{
+  font-weight: 700 !important;
+}

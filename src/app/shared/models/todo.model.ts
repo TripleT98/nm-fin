@@ -4,22 +4,20 @@ export class ToDo {
   private _title: string;
   private _deadline: Date;
   private _isFavorite: boolean = false;
+  public readonly createdAt: Date;
 
   constructor(
     title: string,
-    deadline: Date
+    deadline: Date,
+    isFavorite?: boolean,
+    id?: number,
+    createdAt?: Date
   ){
-    // let i: keyof ToDo;
-    // for (i in obj) {
-    //   const val = obj[i];
-    //   if (!obj.hasOwnProperty(i)) {
-    //     continue;
-    //   }
-    //   this[i] = val;
-    // }
     this._title = title;
     this._deadline = deadline;
-    this.id = Math.random() * deadline.getTime();
+    this.id = id || Math.random() * deadline.getTime();
+    this._isFavorite = isFavorite || false;
+    this.createdAt = createdAt || new Date();
   }
 
   public set title(text: string) {
