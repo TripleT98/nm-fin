@@ -51,6 +51,7 @@ export class ToDo {
   public doesItEndToday(): boolean {
     const timeLeft = this.getTimeLeft();
     const msInDay = 24 * 60 * 60 * 1000;
+    console.log(timeLeft, msInDay, timeLeft <= msInDay);
     return timeLeft <= msInDay;
   }
 

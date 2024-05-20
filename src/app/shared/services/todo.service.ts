@@ -1,16 +1,20 @@
 import { Injectable } from "@angular/core";
 import { StorageMap } from '@ngx-pwa/local-storage';
 import { ToDo } from '@shared/models/todo.model';
-import { Observable } from "rxjs";
-import { filter, map, delay, debounceTime } from 'rxjs/operators'
+import { Observable, interval } from "rxjs";
+import { filter, map, delay, debounceTime, mergeMap, take } from 'rxjs/operators'
 
 ////////
+const hour = 3_600_000;
+const day = 3_600_000 * 24;
+
+
 const testTodos = [
-  new ToDo('Первый', new Date(new Date().getTime() + 8**6)),
-  new ToDo('Второй', new Date(new Date().getTime() + 9**6)),
-  new ToDo('Третий', new Date(new Date().getTime() + 10**6)),
-  new ToDo('Четвертый', new Date(new Date().getTime() + 11**6)),
-  new ToDo('Петяый', new Date(new Date().getTime() + 12**6)),
+  new ToDo('Первый', new Date(new Date().getTime() + hour)),
+  new ToDo('Второй', new Date(new Date().getTime() + hour * 3)),
+  new ToDo('Третий', new Date(new Date().getTime() + day)),
+  new ToDo('Четвертый', new Date(new Date().getTime() + day * 2)),
+  new ToDo('Петяый', new Date(new Date().getTime() + day * 10)),
   new ToDo('Длинное названиееееееееееееееееееееееееееееееееееееееее', new Date()),
 ]
 ////////
@@ -36,7 +40,7 @@ export class ToDoService {
     // testTodos.forEach(todo => {
     //   setTimeout(()=>this.createTodo(todo.title, todo.deadline), Math.random() * 10000);
     // });
-    // this.setTodos(testTodos)
+    this.setTodos(testTodos)
     // ///////
   }
 
@@ -82,15 +86,28 @@ export class ToDoService {
       debounceTime(delayTime),
       map(todos => (todos || []) as ToDo[]),
       map(todos => {
-        return todos.map(todo => {
-          const id = todo.id;
-          const title = todo['_title'];
-          const deadline = todo['_deadline'];
-          const isFavorite = todo['_isFavorite'];
-          return new ToDo(title, deadline, isFavorite, id);
-        })}
+        return this.transformTodos(todos)}
       )
     );
+  }
+
+  private transformTodos(todos: ToDo[]): ToDo[]{
+    return todos.map(todo => {
+      const id = todo.id;
+      const title = todo['_title'];
+      const deadline = todo['_deadline'];
+      const isFavorite = todo['_isFavorite'];
+      const createdAt = todo['createdAt'];
+      return new ToDo(title, deadline, isFavorite, id, createdAt);
+    })
+  }
+
+  public watchExpiringTodos$(): Observable<ToDo[]> {
+    return this.observer$.pipe(map(todos => todos.filter(todo => todo.doesItEndToday())))
+  }
+
+  public watchTodosExeptExpiring$(): Observable<ToDo[]> {
+    return this.observer$.pipe(map(todos => todos.filter(todo => !todo.doesItEndToday())))
   }
 
 }
