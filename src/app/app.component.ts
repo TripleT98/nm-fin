@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RouterOutlet, RouterModule } from '@angular/router';
+import { RouterOutlet, RouterModule, Router } from '@angular/router';
 import { HeaderComponent } from '@components/header/header.component';
 
 
@@ -12,5 +12,11 @@ import { HeaderComponent } from '@components/header/header.component';
   styleUrl: './app.component.scss'
 })
 export class AppComponent {
-  title = 'nm-fin';
+
+  constructor(
+    private router: Router
+  ){
+    router.navigate(['list']);
+  }
+
 }

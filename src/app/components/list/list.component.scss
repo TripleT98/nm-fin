@@ -7,12 +7,16 @@
 
 :host{
   display: block;
-  @include fullSize;
+  overflow-x: hidden;
+  padding-bottom: 24px;
 }
 
 .todo-list{
   @include fullSize;
   padding: 24px $basic-side-padding;
+  display: flex;
+  flex-direction: column;
+  row-gap: 24px;
   @media (max-width: 1040px) {
     padding: 24px;
   }
@@ -91,7 +95,16 @@ $cols-cmount: 6;
 .action.icon{
   cursor: pointer;
   transition-duration: .2s;
-  &:hover{
-     color: red !important;
+  &.favour{
+    &.active{
+      &:hover{
+        color: black !important;
+      }
+    }
+  }
+  &.delete, &.unactive{
+    &:hover{
+      color: red !important;
+    }
   }
 }

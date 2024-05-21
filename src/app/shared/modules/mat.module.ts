@@ -5,6 +5,7 @@ import { MatTableModule } from '@angular/material/table';
 import { MatIconModule } from '@angular/material/icon';
 import {MatCheckboxModule} from '@angular/material/checkbox';
 import { FormsModule, ReactiveFormsModule } from "@angular/forms";
+import { NgLetModule } from 'ng-let';
 
 const matModules: any[] = [
   MatTooltipModule,
@@ -13,7 +14,8 @@ const matModules: any[] = [
   MatInputModule,
   MatTableModule,
   MatIconModule,
-  MatCheckboxModule
+  MatCheckboxModule,
+  NgLetModule
 ]
 
 @NgModule({

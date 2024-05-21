@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { RouterLink, RouterLinkActive } from '@angular/router';
 import { RouteTrigger } from '@shared/models/route-trigget.models';
 import { MatModule } from '@shared/modules/mat.module';
 
@@ -7,7 +8,7 @@ import { MatModule } from '@shared/modules/mat.module';
 @Component({
   selector: 'app-header',
   standalone: true,
-  imports: [ CommonModule, MatModule ],
+  imports: [ CommonModule, MatModule, RouterLink, RouterLinkActive ],
   templateUrl: './header.component.html',
   styleUrl: './header.component.scss'
 })
@@ -27,7 +28,7 @@ export class HeaderComponent {
     },
     {
       name: 'FAVORITE TODO LIST',
-      path: 'favorite',
+      path: 'favourite',
       tooltip: 'Show favorite todos'
     },
   ]

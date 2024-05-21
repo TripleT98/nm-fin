@@ -1,8 +1,8 @@
 import { Injectable } from "@angular/core";
 import { StorageMap } from '@ngx-pwa/local-storage';
 import { ToDo } from '@shared/models/todo.model';
-import { Observable, interval } from "rxjs";
-import { filter, map, delay, debounceTime, mergeMap, take } from 'rxjs/operators'
+import { Observable, interval, BehaviorSubject } from "rxjs";
+import { filter, map, delay, debounceTime, mergeMap, take, startWith } from 'rxjs/operators'
 
 ////////
 const hour = 3_600_000;
@@ -10,6 +10,18 @@ const day = 3_600_000 * 24;
 
 
 const testTodos = [
+  new ToDo('Первый', new Date(new Date().getTime() + hour)),
+  new ToDo('Второй', new Date(new Date().getTime() + hour * 3)),
+  new ToDo('Третий', new Date(new Date().getTime() + day)),
+  new ToDo('Четвертый', new Date(new Date().getTime() + day * 2)),
+  new ToDo('Петяый', new Date(new Date().getTime() + day * 10)),
+  new ToDo('Длинное названиееееееееееееееееееееееееееееееееееееееее', new Date()),
+  new ToDo('Первый', new Date(new Date().getTime() + hour)),
+  new ToDo('Второй', new Date(new Date().getTime() + hour * 3)),
+  new ToDo('Третий', new Date(new Date().getTime() + day)),
+  new ToDo('Четвертый', new Date(new Date().getTime() + day * 2)),
+  new ToDo('Петяый', new Date(new Date().getTime() + day * 10)),
+  new ToDo('Длинное названиееееееееееееееееееееееееееееееееееееееее', new Date()),
   new ToDo('Первый', new Date(new Date().getTime() + hour)),
   new ToDo('Второй', new Date(new Date().getTime() + hour * 3)),
   new ToDo('Третий', new Date(new Date().getTime() + day)),
@@ -40,7 +52,7 @@ export class ToDoService {
     // testTodos.forEach(todo => {
     //   setTimeout(()=>this.createTodo(todo.title, todo.deadline), Math.random() * 10000);
     // });
-    this.setTodos(testTodos)
+    // this.setTodos(testTodos)
     // ///////
   }
 
@@ -81,14 +93,19 @@ export class ToDoService {
     this.storage.set(this.key, data).subscribe();
   }
 
-  private watchTodos$(delayTime: number = 0): Observable<ToDo[]>{
-    return this.storage.watch(this.key).pipe(
+  private watchTodos$(delayTime: number = 0): BehaviorSubject<ToDo[]>{
+    const todosBSubj = new BehaviorSubject<ToDo[]>([]);
+    this.getTodos().pipe(map(todos => this.transformTodos(todos))).subscribe(todos => todosBSubj.next(todos));
+    this.storage.watch(this.key).pipe(
       debounceTime(delayTime),
       map(todos => (todos || []) as ToDo[]),
       map(todos => {
         return this.transformTodos(todos)}
       )
-    );
+    ).subscribe(todos => {
+      todosBSubj.next(todos);
+    });
+    return todosBSubj;
   }
 
   private transformTodos(todos: ToDo[]): ToDo[]{
