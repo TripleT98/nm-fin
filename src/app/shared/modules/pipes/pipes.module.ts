@@ -1,8 +1,10 @@
 import { NgModule } from "@angular/core";
 import { GetTimePipe } from './get-time-pipe';
+import { GetErrorMessagePipe } from './errors.pipe';
 
 const pipes: any[] = [
-  GetTimePipe
+  GetTimePipe,
+  GetErrorMessagePipe
 ]
 
 @NgModule({

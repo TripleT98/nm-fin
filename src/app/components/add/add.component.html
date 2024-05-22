@@ -1,1 +1,63 @@
-<p>add works!</p>
+<div class="add-form">
+  @for (field of inputFields; track $index) {
+    <ng-conainer [ngSwitch]="field.inputType">
+      <ng-container *ngSwitchCase="'textarea'" [ngTemplateOutlet]="textField" [ngTemplateOutletContext]="{inputField: field, control: creationForm.get(field.name)}">
+      </ng-container>
+      <ng-container *ngSwitchCase="'date'" [ngTemplateOutlet]="dateField" [ngTemplateOutletContext]="{inputField: field, control: creationForm.get(field.name)}">
+      </ng-container>
+      <ng-container *ngSwitchCase="'time'" [ngTemplateOutlet]="timeField" [ngTemplateOutletContext]="{inputField: field, control: creationForm.get(field.name)}">
+      </ng-container>
+    </ng-conainer>
+  }
+</div>
+
+<ng-template #textField let-inputField="inputField" let-control="control">
+  <div class="input-field text">
+      <mat-form-field appearance="outline">
+        <mat-label>{{inputField.label || ''}}</mat-label>
+        <textarea matInput [formControl]="control"></textarea>
+        <mat-error class="error">{{control | getErrMess | async}}</mat-error>
+      </mat-form-field>
+  </div>
+</ng-template>
+
+<ng-template #timeField let-inputField="inputField" let-control="control">
+  <div class="input-field date">
+    <mat-form-field>
+      <mat-label>{{inputField.label || ''}}</mat-label>
+      <input
+        autocomplete="off"
+        matInput [ngxTimepicker]="picker"
+        [formControl]="control"
+        [format]="24"
+        [min]="minDate$ | async"
+        readonly
+      >
+      <button mat-icon-button matIconSuffix (click)="picker.open()">
+        <mat-icon>access_time</mat-icon>
+      </button>
+      <mat-error class="error">{{control | getErrMess | async}}</mat-error>
+    </mat-form-field>
+    <ngx-material-timepicker #picker></ngx-material-timepicker>
+  </div>
+</ng-template>
+
+<ng-template #dateField let-inputField="inputField" let-control="control">
+  <div class="input-field date">
+    <mat-form-field>
+      <mat-label>{{inputField.label || ''}}</mat-label>
+      <input
+        autocomplete="off"
+        matInput
+        [formControl]="control"
+        [matDatepicker]="datepicker"
+        (click)="datepicker.open()"
+        [min]="today$ | async"
+        readonly
+      >
+      <mat-datepicker-toggle matIconSuffix [for]="datepicker"></mat-datepicker-toggle>
+      <mat-datepicker #datepicker></mat-datepicker>
+      <mat-error class="error">{{control | getErrMess | async}}</mat-error>
+    </mat-form-field>
+  </div>
+</ng-template>

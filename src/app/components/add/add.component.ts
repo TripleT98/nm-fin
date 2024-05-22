@@ -1,33 +1,111 @@
-import { Component } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { Component, OnInit, OnDestroy, TemplateRef } from '@angular/core';
+import { CommonModule, DatePipe } from '@angular/common';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
+import { MatModule } from '@shared/modules/mat.module';
 import { ToDoService } from '@shared/services/todo.service';
-import { Observable } from 'rxjs';
-import { startWith, map } from 'rxjs/operators';
+import { InputFieldWithType } from '@shared/models/input-field.model';
+import { PipesModule } from '@shared/modules/pipes/pipes.module';
+import { ValidationService } from '@shared/services/validation.service';
+import { Observable, Subject, timer, combineLatest } from 'rxjs';
+import { startWith, map, takeUntil, filter } from 'rxjs/operators';
 
 @Component({
   selector: 'app-add',
   standalone: true,
-  imports: [ CommonModule ],
+  imports: [ CommonModule, MatModule, PipesModule ],
   templateUrl: './add.component.html',
-  styleUrl: './add.component.scss'
+  styleUrl: './add.component.scss',
+  providers: [ DatePipe ]
 })
-export class AddComponent {
+export class AddComponent implements OnInit, OnDestroy {
 
-  protected readonly creationForm = new FormGroup({
-    title: new FormControl(null, [Validators.required, Validators.maxLength(100)]),
-    expirationDate: new FormControl(null, [Validators.required]),
-    expirationTime: new FormControl(null)
-  })
+  protected readonly creationForm = new FormGroup<Record<FormNames, FormControl>>({} as Record<FormNames, FormControl>);
   protected readonly disableSaveButton$: Observable<boolean> = this.creationForm.statusChanges.pipe(startWith(this.creationForm.invalid), map(status => status === 'INVALID'));
 
-  constructor(
-    private todoS: ToDoService
-  ){
+  private readonly destroy$ = new Subject<any>();
+  private readonly today$: Observable<Date> = timer(0, 1000).pipe(map(_ => new Date), takeUntil(this.destroy$));
+  private readonly isToday$: Observable<boolean> = this.creationForm.valueChanges.pipe(
+    map(value => value.expirationDate),
+    map(date => {
+      const today: string = new Date().toLocaleDateString();
+      const pickedDate: string = date ? new Date(date).toLocaleDateString() : '';
+      return today === pickedDate;
+    })
+  )
+  private readonly minDate$: Observable<string> = combineLatest([
+    this.today$,
+    this.isToday$.pipe(startWith(false))
+  ])
+  .pipe(
+    map(([today, isToday]) => {
+      if (isToday) {
+        return this.datePipe.transform(today, 'HH:mm') as string;
+      } else {
+        return '00:00';
+      }
+    }),
+    takeUntil(this.destroy$)
+  );
 
+  protected readonly inputFields: InputFieldWithType<FormNames>[] = [
+    {
+      name: 'title',
+      label: 'Title',
+      inputType: 'textarea',
+      validators: [Validators.required, Validators.maxLength(100)]
+    },
+    {
+      name: 'expirationDate',
+      label: 'Expiration date',
+      inputType: 'date',
+      validators: [Validators.required],
+      asyncValidators: [this.validationS.dateBiggerThanToday(this.today$)]
+    },
+    {
+      name: 'expirationTime',
+      label: 'Expiration time',
+      inputType: 'time',
+      asyncValidators: [this.validationS.timeBiggerThanNow(this.today$)]
+    },
+  ]
+
+  constructor(
+    private todoS: ToDoService,
+    private datePipe: DatePipe,
+    private validationS: ValidationService
+  ){
+    this.today$.subscribe(console.log)
   }
 
+  ngOnInit(): void {
+    this.creationForm.valueChanges.subscribe(console.log);
+    this.initForm();
+  }
 
+  ngOnDestroy(): void {
+    this.destroy$.next(true);
+    this.destroy$.complete();
+  }
+
+  private initForm(){
+    this.inputFields.forEach(field => {
+      const {disabled, validators, asyncValidators, name} = field;
+      const control = new FormControl({value: null, disabled: disabled || false}, validators || [], asyncValidators || []);
+      this.creationForm.addControl(name, control);
+    })
+  }
+
+  protected reset(){
+    console.log('RESET');
+    this.creationForm.reset();
+  }
+
+  protected save(){
+    const {title, expirationDate, expirationTime} = this.creationForm.value;
+    console.log("SAVED")
+  }
 
 }
 
+
+type FormNames = 'title' | 'expirationDate' | 'expirationTime';

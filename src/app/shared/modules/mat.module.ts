@@ -3,7 +3,11 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatInputModule } from '@angular/material/input';
 import { MatTableModule } from '@angular/material/table';
 import { MatIconModule } from '@angular/material/icon';
-import {MatCheckboxModule} from '@angular/material/checkbox';
+import { MatCheckboxModule } from '@angular/material/checkbox';
+import { MatDatepickerModule } from '@angular/material/datepicker';
+import { MatNativeDateModule } from '@angular/material/core';
+import { MatButtonModule } from "@angular/material/button";
+import { NgxMaterialTimepickerModule } from 'ngx-material-timepicker';
 import { FormsModule, ReactiveFormsModule } from "@angular/forms";
 import { NgLetModule } from 'ng-let';
 
@@ -15,7 +19,11 @@ const matModules: any[] = [
   MatTableModule,
   MatIconModule,
   MatCheckboxModule,
-  NgLetModule
+  NgLetModule,
+  NgxMaterialTimepickerModule,
+  MatDatepickerModule,
+  MatNativeDateModule,
+  MatButtonModule
 ]
 
 @NgModule({
