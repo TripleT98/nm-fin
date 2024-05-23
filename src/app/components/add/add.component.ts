@@ -1,5 +1,6 @@
 import { Component, OnInit, OnDestroy, TemplateRef } from '@angular/core';
 import { CommonModule, DatePipe } from '@angular/common';
+import { Router } from '@angular/router';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { MatModule } from '@shared/modules/mat.module';
 import { ToDoService } from '@shared/services/todo.service';
@@ -8,6 +9,7 @@ import { PipesModule } from '@shared/modules/pipes/pipes.module';
 import { ValidationService } from '@shared/services/validation.service';
 import { Observable, Subject, timer, combineLatest } from 'rxjs';
 import { startWith, map, takeUntil, filter } from 'rxjs/operators';
+import { getMsFromTime } from '@shared/utils/time';
 
 @Component({
   selector: 'app-add',
@@ -65,20 +67,19 @@ export class AddComponent implements OnInit, OnDestroy {
       name: 'expirationTime',
       label: 'Expiration time',
       inputType: 'time',
-      asyncValidators: [this.validationS.timeBiggerThanNow(this.today$)]
+      asyncValidators: [this.validationS.timeBiggerThanNow(this.today$, 'expirationDate')]
     },
   ]
 
   constructor(
     private todoS: ToDoService,
     private datePipe: DatePipe,
-    private validationS: ValidationService
+    private validationS: ValidationService,
+    private router: Router,
   ){
-    this.today$.subscribe(console.log)
   }
 
   ngOnInit(): void {
-    this.creationForm.valueChanges.subscribe(console.log);
     this.initForm();
   }
 
@@ -93,16 +94,20 @@ export class AddComponent implements OnInit, OnDestroy {
       const control = new FormControl({value: null, disabled: disabled || false}, validators || [], asyncValidators || []);
       this.creationForm.addControl(name, control);
     })
+    const {expirationDate, expirationTime} = this.creationForm.controls;
+    expirationDate.valueChanges.pipe(takeUntil(this.destroy$)).subscribe(_ => queueMicrotask(() => expirationTime.setValue(expirationTime.value)));
   }
 
   protected reset(){
-    console.log('RESET');
     this.creationForm.reset();
   }
 
   protected save(){
     const {title, expirationDate, expirationTime} = this.creationForm.value;
-    console.log("SAVED")
+    const msTime = expirationTime ? getMsFromTime(expirationTime) : getMsFromTime(expirationTime || '23:59') + 60_000;
+    const pickedDateTime = new Date(expirationDate.getTime() + msTime);
+    this.todoS.createTodo(title, pickedDateTime)
+    this.router.navigate(['list']);
   }
 
 }

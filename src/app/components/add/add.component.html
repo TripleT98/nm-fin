@@ -1,14 +1,16 @@
 <div class="add-form">
   @for (field of inputFields; track $index) {
-    <ng-conainer [ngSwitch]="field.inputType">
+    <ng-container [ngSwitch]="field.inputType">
       <ng-container *ngSwitchCase="'textarea'" [ngTemplateOutlet]="textField" [ngTemplateOutletContext]="{inputField: field, control: creationForm.get(field.name)}">
       </ng-container>
       <ng-container *ngSwitchCase="'date'" [ngTemplateOutlet]="dateField" [ngTemplateOutletContext]="{inputField: field, control: creationForm.get(field.name)}">
       </ng-container>
       <ng-container *ngSwitchCase="'time'" [ngTemplateOutlet]="timeField" [ngTemplateOutletContext]="{inputField: field, control: creationForm.get(field.name)}">
       </ng-container>
-    </ng-conainer>
+    </ng-container>
   }
+  <ng-container [ngTemplateOutlet]="buttonBar">
+  </ng-container>
 </div>
 
 <ng-template #textField let-inputField="inputField" let-control="control">
@@ -59,5 +61,13 @@
       <mat-datepicker #datepicker></mat-datepicker>
       <mat-error class="error">{{control | getErrMess | async}}</mat-error>
     </mat-form-field>
+  </div>
+</ng-template>
+
+
+<ng-template #buttonBar>
+  <div class="button-bar">
+    <button class="button create" mat-raised-button (click)="save()" [disabled]="disableSaveButton$ | async">Create</button>
+    <button class="button cancel" mat-raised-button (click)="reset()">Cancel</button>
   </div>
 </ng-template>

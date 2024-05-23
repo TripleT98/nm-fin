@@ -59,7 +59,7 @@ export class ToDoService {
   public createTodo(title: string, date: Date){
     const newTodo = new ToDo(title, date);
     this.getTodos().subscribe(todos => {
-      const newTodos = [...todos, newTodo];
+      const newTodos = [newTodo, ...todos];
     this.setTodos(newTodos);
     })
   }

@@ -1,6 +1,6 @@
 import { Pipe, PipeTransform, Injectable } from '@angular/core';
 import { AbstractControl } from '@angular/forms';
-import { Observable, startWith, of } from 'rxjs';
+import { Observable, startWith, of, combineLatest } from 'rxjs';
 import { map } from 'rxjs/operators';
 
 @Injectable({
@@ -33,7 +33,10 @@ export class GetErrorMessagePipe implements PipeTransform {
   }
 
   transform(form: AbstractControl | null): Observable<string | null>{
-    return form ? form.valueChanges.pipe(startWith(null), map(_ => {
+    return form ? combineLatest([
+      form.valueChanges.pipe(startWith(null)),
+      form.statusChanges.pipe(startWith(null)),
+    ]).pipe(map(_ => {
       const errors = Object.entries(form.errors || {});
       if (!errors?.length) {
         return '';
