@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, ChangeDetectionStrategy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink, RouterLinkActive } from '@angular/router';
 import { RouteTrigger } from '@shared/models/route-trigget.models';
@@ -10,7 +10,8 @@ import { MatModule } from '@shared/modules/mat.module';
   standalone: true,
   imports: [ CommonModule, MatModule, RouterLink, RouterLinkActive ],
   templateUrl: './header.component.html',
-  styleUrl: './header.component.scss'
+  styleUrl: './header.component.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class HeaderComponent {
 

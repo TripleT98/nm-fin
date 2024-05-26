@@ -41,7 +41,7 @@ export class AddComponent implements OnInit, OnDestroy {
   .pipe(
     map(([today, isToday]) => {
       if (isToday) {
-        return this.datePipe.transform(today, 'HH:mm') as string;
+        return this.datePipe.transform(new Date(today).getTime() + 60_000, 'HH:mm') as string;
       } else {
         return '00:00';
       }

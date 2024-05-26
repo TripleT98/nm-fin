@@ -9,20 +9,22 @@
 :host{
   display: block;
   width: 100%;
+  padding: 48px calc($basic-side-padding * 2);
+  @media (max-width: 1040px) {
+    padding: 48px $basic-side-padding;
+  }
 }
 
 .add-form{
-  @include fullSize;
-  padding: 48px calc($basic-side-padding * 2);
   display: flex;
   align-items: center;
   justify-content: center;
   column-gap: 10%;
   flex-wrap: wrap;
   row-gap: 24px;
-  @media (max-width: 1040px) {
-    padding: 24px;
-  }
+  padding: 24px;
+  border-radius: 12px;
+  box-shadow: 0px 0px 10px $main-color-2;
   .text{
     width: 80%;
     textarea{
@@ -40,6 +42,9 @@
   }
   .date{
     width: 35%;
+    @media (max-width: 690px) {
+      width: 80%;
+    }
   }
   .input-field{
     mat-form-field{

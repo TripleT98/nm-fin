@@ -3,17 +3,17 @@
     <ng-container *ngSwitchCase="listTypes.all">
       <div class="table-container" *ngIf="expiringTodos$ | async as todoList" [hidden]="!todoList.length">
         <ng-container [ngTemplateOutlet]="tableTitle" [ngTemplateOutletContext]="{ text: 'Today TODO`s'}"></ng-container>
-        <ng-container [ngTemplateOutlet]="todoTable" [ngTemplateOutletContext]="{ todoList: todoList, tType: tableType.expiration }"></ng-container>
+        <ng-container [ngTemplateOutlet]="todoTable" [ngTemplateOutletContext]="{ todoList, tType: tableType.expiration }"></ng-container>
       </div>
       <div class="table-container" *ngIf="exeptExpiringTodos$ | async as todoList" [hidden]="!todoList.length">
         <ng-container [ngTemplateOutlet]="tableTitle" [ngTemplateOutletContext]="{ text: 'My Todo List'}"></ng-container>
-        <ng-container [ngTemplateOutlet]="todoTable" [ngTemplateOutletContext]="{ todoList: todoList, tType: tableType.notExpiration }"></ng-container>
+        <ng-container [ngTemplateOutlet]="todoTable" [ngTemplateOutletContext]="{ todoList, tType: tableType.notExpiration }"></ng-container>
       </div>
     </ng-container>
     <ng-container *ngSwitchCase="listTypes.favourite">
       <div class="table-container" *ngIf="favouriteTodos$ | async as todoList" [hidden]="!todoList.length">
         <ng-container [ngTemplateOutlet]="tableTitle" [ngTemplateOutletContext]="{ text: 'Favourite Todos'}"></ng-container>
-        <ng-container [ngTemplateOutlet]="todoTable" [ngTemplateOutletContext]="{ todoList: todoList, tType: tableType.notExpiration }"></ng-container>
+        <ng-container [ngTemplateOutlet]="todoTable" [ngTemplateOutletContext]="{ todoList, tType: tableType.notExpiration }"></ng-container>
       </div>
     </ng-container>
   </ng-container>
@@ -27,7 +27,11 @@
       <ng-container matColumnDef="checkbox">
         <th mat-header-cell *matHeaderCellDef></th>
         <td mat-cell *matCellDef="let todo">
-          <mat-checkbox></mat-checkbox>
+          <mat-checkbox
+            (change)="check(todo)"
+            [matTooltip]="'Mark for check'"
+            [disabled]="deletePending.has(todo.id)"
+          ></mat-checkbox>
         </td>
       </ng-container>
 
@@ -46,9 +50,19 @@
       </ng-container>
 
       <!-- Deadline Column -->
-      <ng-container matColumnDef="deadline">
-        <th mat-header-cell *matHeaderCellDef> {{tType === tableType.expiration ? 'Time left' : 'Expiration'}} </th>
-        <td mat-cell *matCellDef="let todo"> {{tType === tableType.expiration ? (todo.id | getTime | async) : (todo.deadline | date)}} </td>
+      <ng-container matColumnDef="deadline" *ngLet="tType === tableType.expiration as isExp">
+        <th mat-header-cell *matHeaderCellDef>{{isExp ? 'Time left' : 'Expiration'}} </th>
+        <td mat-cell *matCellDef="let todo">
+          <ng-container *ngIf="isExp; else timeLeftTemp">
+            <span
+              *ngLet="todo.id | getTime | async as timeLeft"
+              [ngClass]="{alarmed: timeLeft.isExpires}"
+            >{{timeLeft.timeString}}</span>
+          </ng-container>
+          <ng-template #timeLeftTemp>
+            {{todo.deadline | date}}
+          </ng-template>
+        </td>
       </ng-container>
 
       <!-- Is Fovourite Column -->
@@ -69,12 +83,12 @@
       <ng-container matColumnDef="delete">
         <th mat-header-cell *matHeaderCellDef></th>
         <td mat-cell *matCellDef="let todo">
-          <mat-icon (click)="deleteTodo(todo)" class="action icon delete">cancel</mat-icon>
+          <mat-icon (click)="deleteTodo(todo)" class="action icon delete" [ngClass]="{disabled: deletePending.has(todo.id)}">cancel</mat-icon>
         </td>
       </ng-container>
 
       <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></tr>
-      <tr class="todo-row" mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+      <tr class="todo-row" mat-row *matRowDef="let row; columns: displayedColumns;" [ngStyle]="{display: removed.has(row.id) && 'block'}" [ngClass]="{'deleting': removed.has(row.id)}"></tr>
 
     </table>
   </div>

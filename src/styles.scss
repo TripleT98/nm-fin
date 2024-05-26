@@ -16,3 +16,12 @@ body{
   height: 100vh;
   width: 100vw;
 }
+
+*.disabled{
+  pointer-events: none;
+  color: $main-color-2;
+}
+
+*.header{
+  font-size: 1.3em;
+}

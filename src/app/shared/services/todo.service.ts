@@ -2,7 +2,7 @@ import { Injectable } from "@angular/core";
 import { StorageMap } from '@ngx-pwa/local-storage';
 import { ToDo } from '@shared/models/todo.model';
 import { Observable, interval, BehaviorSubject } from "rxjs";
-import { filter, map, delay, debounceTime, mergeMap, take, startWith } from 'rxjs/operators'
+import { filter, map, delay, debounceTime, mergeMap, take, startWith, tap } from 'rxjs/operators'
 
 ////////
 const hour = 3_600_000;
@@ -35,25 +35,13 @@ const testTodos = [
 export class ToDoService {
 
   private readonly key: string = 'todos';
-  //private _todos: ToDo[] = [];
 
   public readonly observer$: Observable<ToDo[]> = this.watchTodos$(2000);
 
   constructor(
     private storage: StorageMap
   ){
-    // this.storage.watch(this.key).subscribe(todos => {
-    //   if (!todos) {
-    //     return;
-    //   }
-    //   this._todos = todos as ToDo[];
-    // })
-    // ///////
-    // testTodos.forEach(todo => {
-    //   setTimeout(()=>this.createTodo(todo.title, todo.deadline), Math.random() * 10000);
-    // });
-    // this.setTodos(testTodos)
-    // ///////
+     this.setTodos(testTodos)
   }
 
   public createTodo(title: string, date: Date){
@@ -68,11 +56,16 @@ export class ToDoService {
     return this.storage.get(this.key).pipe(map(todos => (todos || []) as ToDo[]));
   }
 
-  public deleteToDo(id: number): void {
-    this.getTodos().subscribe(todos => {
+  public deleteToDo(id: number): Observable<ToDo[]> {
+   return this.getTodos().pipe(map(todos => {
       const newTodos = todos.filter(todo => todo.id !== id);
       this.setTodos(newTodos);
-    })
+      return newTodos;
+    }), delay(300));
+  }
+
+  public markForCheck(id: number): Observable<ToDo[]> {
+    return this.deleteToDo(id);
   }
 
   public patсhToDo(id: number, todo: Partial<ToDo>){

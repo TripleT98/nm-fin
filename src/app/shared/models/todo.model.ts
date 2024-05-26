@@ -7,6 +7,7 @@ export class ToDo {
   private _title: string;
   private _deadline: Date;
   private _isFavorite: boolean = false;
+  private _isDone: boolean = false;
   public readonly createdAt: Date;
 
   constructor(
@@ -45,6 +46,14 @@ export class ToDo {
 
   public get isFavorite(): boolean {
     return this._isFavorite;
+  }
+
+  public set isDone(isDone: boolean) {
+    this.isDone = isDone;
+  }
+
+  public get isDone(): boolean {
+    return this._isDone;
   }
 
   public getTimeLeft(): number {

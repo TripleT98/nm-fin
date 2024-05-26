@@ -1,8 +1,8 @@
 import { Pipe, PipeTransform } from '@angular/core';
 import { ToDoService } from '@shared/services/todo.service';
 import { ToDo } from '@shared/models/todo.model';
-import { Observable, timer } from 'rxjs';
-import { map, mergeMap, filter, tap } from 'rxjs/operators';
+import { Observable, timer, of } from 'rxjs';
+import { map, mergeMap, filter, tap, startWith } from 'rxjs/operators';
 
 @Pipe({
   name: 'getTime'
@@ -16,19 +16,24 @@ export class GetTimePipe implements PipeTransform {
   ){
   }
 
-  transform(todoId: number): Observable<string> {
-    return timer(0, 1000).pipe(
+  transform(todoId: number): Observable<TimeInfo> {
+    return of('').pipe(mergeMap(_ => timer(0, 1000).pipe(startWith(''),
       mergeMap(_ => this.todos$),
       map(todos => todos.find(todo => todo.id === todoId)),
       filter(todo => !!todo),
-      map(todo => todo ? this.getTimeStr(todo?.getTimeLeft()) : '')
-    )
+      map(todo => this.getTimeStr(todo?.getTimeLeft() || 0))
+    )))
   }
 
   //Время в миллисекнудах
-  getTimeStr(ms: number) {
+  getTimeStr(ms: number): TimeInfo {
+    const isExpires = ms < 3_600_000;
     if (ms <= 0) {
-      return 'Time is up!';
+      return {
+        timeString: 'Time is up!',
+        msTime: ms,
+        isExpires
+      };
     }
     var hours = ms / (1000*60*60);
     var absoluteHours = Math.floor(hours);
@@ -42,8 +47,18 @@ export class GetTimePipe implements PipeTransform {
     var absoluteSeconds = Math.floor(seconds);
     var s = absoluteSeconds > 9 ? absoluteSeconds : '0' + absoluteSeconds;
 
-    const resultStr = h + ':' + m + ':' + s
-    return resultStr;
+    const resultStr = h + ':' + m + ':' + s;
+    return {
+      timeString: resultStr,
+      msTime: ms,
+      isExpires
+    };
   }
 
+}
+
+type TimeInfo = {
+  timeString: string;
+  msTime: number;
+  isExpires: boolean;
 }

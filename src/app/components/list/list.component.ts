@@ -32,10 +32,12 @@ export class ListComponent implements OnDestroy {
   protected readonly listTypes: typeof ListType = ListType;
 
   protected favourPending = new Map<number, boolean>();
+  protected deletePending = new Set<number>();
+  protected removed = new Set<number>();
 
   constructor(
     private todoS: ToDoService,
-    private activatedRoute: ActivatedRoute
+    private activatedRoute: ActivatedRoute,
   ){
     this.todos$.pipe(takeUntil(this.destroy$)).subscribe();
   }
@@ -52,7 +54,17 @@ export class ListComponent implements OnDestroy {
   }
 
   protected deleteTodo(todo: ToDo): void {
-    this.todoS.deleteToDo(todo.id);
+    this.deletePending.add(todo.id);
+    this.todoS.deleteToDo(todo.id).subscribe(_ => {
+      this.removed.add(todo.id)
+    });
+  }
+
+  protected check(todo: ToDo): void {
+    this.deletePending.add(todo.id);
+    this.todoS.markForCheck(todo.id).subscribe(_ => {
+      this.removed.add(todo.id)
+    });
   }
 
   ngOnDestroy(): void {
