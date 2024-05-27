@@ -7,6 +7,7 @@ import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatNativeDateModule } from '@angular/material/core';
 import { MatButtonModule } from "@angular/material/button";
+import { MatSidenavModule } from '@angular/material/sidenav';
 import { NgxMaterialTimepickerModule } from 'ngx-material-timepicker';
 import { FormsModule, ReactiveFormsModule } from "@angular/forms";
 import { NgLetModule } from 'ng-let';
@@ -23,7 +24,8 @@ const matModules: any[] = [
   NgxMaterialTimepickerModule,
   MatDatepickerModule,
   MatNativeDateModule,
-  MatButtonModule
+  MatButtonModule,
+  MatSidenavModule
 ]
 
 @NgModule({

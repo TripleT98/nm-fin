@@ -1,12 +1,24 @@
 <div class="app-header">
+  <button mat-icon-button class="side-menu-button" (click)="toggleSidenav()">
+    <mat-icon>menu</mat-icon>
+  </button>
   <p class="title">{{title}}</p>
   <ng-container [ngTemplateOutlet]="navBar"></ng-container>
+  <ng-container [ngTemplateOutlet]="sideNav"></ng-container>
 </div>
 
-<ng-template #navBar>
+<ng-template #sideNav>
+  <div class="side-nav" [ngClass]="{'opened': sideNavStatus}">
+    <ng-container [ngTemplateOutlet]="navBar" [ngTemplateOutletContext]="{withIcon: true}"></ng-container>
+  </div>
+</ng-template>
+
+<ng-template #navBar let-withIcon="withIcon">
   <div class="nav-bar">
     @for (item of navItems; track $index) {
-      <p class="nav-bar_item" [matTooltip]="item.tooltip || ''" [routerLink]="item.path">{{item.name}}</p>
+      <span class="nav-bar_item" (click)="navigateTo(item.path)" [matTooltip]="item.tooltip || ''">
+        <mat-icon *ngIf="withIcon">{{item.icon}}</mat-icon><p>{{item.name}}</p>
+      </span>
     }
   </div>
 </ng-template>

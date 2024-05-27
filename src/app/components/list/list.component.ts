@@ -9,14 +9,17 @@ import { ActivatedRoute } from '@angular/router';
 import { TableType } from '@shared/models/table-type.model';
 import { ListType } from '@shared/models/list-type.model';
 import { PipesModule } from '@shared/modules/pipes/pipes.module';
+import { DirectivesModule } from '@shared/modules/directives/directives.module';
+import { EAdaptiveSize } from '@shared/models/adaptive-size';
 import { TimerComponent } from './timer/timer.component';
+import { ListItemComponent } from './list-item/list-item.component';
 
 @Component({
   selector: 'app-list',
   standalone: true,
-  imports: [ CommonModule, MatModule, PipesModule, TimerComponent ],
+  imports: [ CommonModule, MatModule, PipesModule, TimerComponent, ListItemComponent, DirectivesModule ],
   templateUrl: './list.component.html',
-  styleUrl: './list.component.scss',
+  styleUrls: ['./general.scss', './list.component.scss'],
 })
 export class ListComponent implements OnDestroy {
 
@@ -31,10 +34,11 @@ export class ListComponent implements OnDestroy {
   protected readonly tableType: typeof TableType = TableType;
   protected readonly listType$: Observable<ListType> = this.activatedRoute.data.pipe(map((data) => data['listType'] || ListType.all));
   protected readonly listTypes: typeof ListType = ListType;
+  protected readonly adaptiveSizes: typeof EAdaptiveSize = EAdaptiveSize;
 
-  protected favourPending = new Map<number, boolean>();
-  protected deletePending = new Set<number>();
-  protected removed = new Set<number>();
+  public favourPending = new Map<number, boolean>();
+  public deletePending = new Set<number>();
+  public removed = new Set<number>();
 
   constructor(
     private todoS: ToDoService,
@@ -54,7 +58,7 @@ export class ListComponent implements OnDestroy {
     this.todoS.patсhToDo(id, {...todo, _isFavorite: (favourStatus !== undefined) ? !favourStatus : !currStatus} as unknown as ToDo);
   }
 
-  protected deleteTodo(todo: ToDo): void {
+  public deleteTodo(todo: ToDo): void {
     this.deletePending.add(todo.id);
     this.todoS.deleteToDo(todo.id).subscribe(_ => {
       this.removed.add(todo.id)

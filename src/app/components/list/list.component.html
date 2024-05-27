@@ -21,78 +21,96 @@
 
 <ng-template #todoTable let-todoList="todoList" let-tType="tType">
   <div class="table">
-    <table mat-table [dataSource]="todoList" class="mat-elevation-z8 mat-table no-shadow with-border-row">
 
-      <!-- Checkbox Column -->
-      <ng-container matColumnDef="checkbox">
-        <th mat-header-cell *matHeaderCellDef></th>
-        <td mat-cell *matCellDef="let todo">
-          <mat-checkbox
-            (change)="check(todo)"
-            [matTooltip]="'Mark for check'"
-            [disabled]="deletePending.has(todo.id) || todo.isExpired"
-          ></mat-checkbox>
-        </td>
-      </ng-container>
+    <ng-container
+      [ngTemplateOutlet]="todosMobileTable"
+      [ngTemplateOutletContext]="{todoList}"
+      *screenSizeStructure="[adaptiveSizes.SMALL, adaptiveSizes.XSMALL]; else desctopTable"
+    >
+    </ng-container>
 
-      <!-- Title Column -->
-      <ng-container matColumnDef="title">
-        <th mat-header-cell *matHeaderCellDef></th>
-        <td mat-cell *matCellDef="let todo">
-          <span [matTooltip]="todo.title">{{todo.title}}</span>
-        </td>
-      </ng-container>
+    <ng-template #desctopTable>
+      <table mat-table [dataSource]="todoList" class="mat-elevation-z8 mat-table no-shadow with-border-row">
 
-      <!-- Created Column -->
-      <ng-container matColumnDef="createdAt">
-        <th mat-header-cell *matHeaderCellDef> Created At </th>
-        <td mat-cell *matCellDef="let todo"> {{todo.createdAt | date }} </td>
-      </ng-container>
+        <!-- Checkbox Column -->
+        <ng-container matColumnDef="checkbox">
+          <th mat-header-cell *matHeaderCellDef></th>
+          <td mat-cell *matCellDef="let todo">
+            <mat-checkbox
+              (change)="check(todo)"
+              [matTooltip]="'Mark for check'"
+              [disabled]="deletePending.has(todo.id) || todo.isExpired"
+            ></mat-checkbox>
+          </td>
+        </ng-container>
 
-      <!-- Deadline Column -->
-      <ng-container matColumnDef="deadline" *ngLet="tType === tableType.expiration as isExp">
-        <th mat-header-cell *matHeaderCellDef>{{isExp ? 'Time left' : 'Expiration'}} </th>
-        <td mat-cell *matCellDef="let todo">
-          <app-timer [todoId]="todo.id"></app-timer>
-        </td>
-      </ng-container>
+        <!-- Title Column -->
+        <ng-container matColumnDef="title">
+          <th mat-header-cell *matHeaderCellDef></th>
+          <td mat-cell *matCellDef="let todo">
+            <span [matTooltip]="todo.title">{{todo.title}}</span>
+          </td>
+        </ng-container>
 
-      <!-- Is Fovourite Column -->
-      <ng-container matColumnDef="isFavorite">
-        <th mat-header-cell *matHeaderCellDef></th>
-        <td mat-cell *matCellDef="let todo">
-          <mat-icon
-            *ngLet="favourPending.get(todo.id) as isfavour"
-            (click)="switchFavourStatus(todo)"
-            class="action icon favour"
-            [ngClass]="{active: isfavour, unactive: !isfavour}"
-            [ngStyle]="{color: isfavour ? 'red' : 'black'}"
-          >favorite</mat-icon>
-        </td>
-      </ng-container>
+        <!-- Created Column -->
+        <ng-container matColumnDef="createdAt">
+          <th mat-header-cell *matHeaderCellDef> Created At </th>
+          <td mat-cell *matCellDef="let todo"> {{todo.createdAt | date }} </td>
+        </ng-container>
 
-      <!-- Delete Column -->
-      <ng-container matColumnDef="delete">
-        <th mat-header-cell *matHeaderCellDef></th>
-        <td mat-cell *matCellDef="let todo">
-          <mat-icon (click)="deleteTodo(todo)" class="action icon delete" [ngClass]="{disabled: deletePending.has(todo.id)}">cancel</mat-icon>
-        </td>
-      </ng-container>
+        <!-- Deadline Column -->
+        <ng-container matColumnDef="deadline" *ngLet="tType === tableType.expiration as isExp">
+          <th mat-header-cell *matHeaderCellDef>{{isExp ? 'Time left' : 'Expiration'}} </th>
+          <td mat-cell *matCellDef="let todo">
+            <app-timer [todoId]="todo.id"></app-timer>
+          </td>
+        </ng-container>
 
-      <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></tr>
-      <tr
-        class="todo-row"
-        mat-row
-        *matRowDef="let row; columns: displayedColumns;"
-        [ngStyle]="{display: removed.has(row.id) && 'block'}"
-        [ngClass]="{'deleting': removed.has(row.id), 'isExpired': row.isExpired}"
-      >
-      </tr>
+        <!-- Is Fovourite Column -->
+        <ng-container matColumnDef="isFavorite">
+          <th mat-header-cell *matHeaderCellDef></th>
+          <td mat-cell *matCellDef="let todo">
+            <mat-icon
+              *ngLet="favourPending.get(todo.id) as isfavour"
+              (click)="switchFavourStatus(todo)"
+              class="action icon favour"
+              [ngClass]="{active: isfavour, unactive: !isfavour}"
+              [ngStyle]="{color: isfavour ? 'red' : 'black'}"
+            >favorite</mat-icon>
+          </td>
+        </ng-container>
 
-    </table>
+        <!-- Delete Column -->
+        <ng-container matColumnDef="delete">
+          <th mat-header-cell *matHeaderCellDef></th>
+          <td mat-cell *matCellDef="let todo">
+            <mat-icon (click)="deleteTodo(todo)" class="action icon delete" [ngClass]="{disabled: deletePending.has(todo.id)}">cancel</mat-icon>
+          </td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></tr>
+        <tr
+          class="todo-row"
+          mat-row
+          *matRowDef="let row; columns: displayedColumns;"
+          [ngStyle]="{display: removed.has(row.id) && 'block'}"
+          [ngClass]="{'deleting': removed.has(row.id), 'isExpired': row.isExpired}"
+        >
+        </tr>
+
+      </table>
+    </ng-template>
+
   </div>
 </ng-template>
 
+<ng-template #todosMobileTable let-todoList="todoList">
+  <div class="mobile-table">
+    @for (item of todoList; track $index) {
+      <app-list-item class="todo-card" [todo]="item"></app-list-item>
+    }
+  </div>
+</ng-template>
 
 <ng-template #tableTitle let-text="text">
   <div class="table-title">{{text}}</div>

@@ -1,0 +1,24 @@
+.action.icon{
+  cursor: pointer;
+  transition-duration: .2s;
+  &.favour{
+    &.active{
+      &:hover{
+        color: black !important;
+      }
+    }
+  }
+  &.delete, &.unactive{
+    &:hover{
+      color: red !important;
+    }
+  }
+}
+
+.title{
+  &_text{
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+}

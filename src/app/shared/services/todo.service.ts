@@ -43,7 +43,7 @@ export class ToDoService {
   constructor(
     private storage: StorageMap
   ){
-     this.setTodos(testTodos)
+    // this.setTodos(testTodos)
   }
 
   public createTodo(title: string, date: Date){

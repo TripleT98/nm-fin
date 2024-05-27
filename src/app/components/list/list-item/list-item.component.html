@@ -1,3 +1,22 @@
 <div class="list-item">
-
+  <div class="title" [matTooltip]="todo?.title">{{todo?.title}}</div>
+  <div class="date" [matTooltip]="'Created at'">{{todo.createdAt | date}}</div>
+  <div class="date" [matTooltip]="'Deadline'"><app-timer [todoId]="todo?.id"></app-timer></div>
+  <mat-icon
+    (click)="parentList?.deleteTodo(todo)"
+    class="action icon delete"
+    [ngClass]="{disabled: parentList?.deletePending?.has(todo.id)}"
+  >
+    cancel
+  </mat-icon>
+  <mat-icon
+    *ngLet="parentList?.favourPending?.get(todo.id) as isfavour"
+    (click)="parentList?.switchFavourStatus(todo)"
+    class="action icon favour"
+    [ngClass]="{active: isfavour, unactive: !isfavour}"
+    [ngStyle]="{color: isfavour ? 'red' : 'black'}"
+  >
+    favorite
+  </mat-icon>
 </div>
+

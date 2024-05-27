@@ -1,5 +1,7 @@
 @import "variables.scss";
 
+$side-nav-width: 240px;
+
 :host{
   display: block;
   width: 100%;
@@ -15,6 +17,7 @@
   align-items: center;
   padding: 0 $basic-side-padding;
   background-color: $main-color;
+  position: relative;
 }
 
 .title{
@@ -29,7 +32,56 @@
     transition-duration: .3s;
     cursor: pointer;
     &:hover{
-      color: $text-color-hover;
+      *{
+        color: $text-color-hover;
+      }
     }
+  }
+}
+
+.side-menu-button{
+  position: absolute;
+  left: 0px;
+  z-index: 2;
+  display: none;
+}
+
+.side-nav{
+  position: absolute;
+  width: $side-nav-width;
+  left: -$side-nav-width;
+  transition-duration: .4s;
+  height: 100vh;
+  background-color: #EEE;
+  top: 0px;
+  display: none;
+  &.opened{
+    transition-duration: .4s;
+    left: 0px;
+  }
+  .nav-bar{
+    padding-top: 62px;
+    padding-left: 24px;
+    flex-direction: column;
+    row-gap: 24px;
+    &_item{
+      display: flex;
+      p{
+        margin-left: 12px;
+      }
+    }
+  }
+}
+
+@media (max-width: 660px){
+  .side-nav{
+    display: block;
+    z-index: 1;
+  }
+  .side-menu-button{
+    display: inline;
+  }
+  .app-header > .nav-bar{
+    display: none;
   }
 }

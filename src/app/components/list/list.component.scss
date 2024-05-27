@@ -1,5 +1,7 @@
 @import "variables.scss";
 
+$table-width: 90%;
+
 @mixin fullSize{
   width: 100%;
   height: 100%;
@@ -41,16 +43,10 @@
 .mat-table{
   overflow: auto;
   table-layout: fixed !important;
-  width: 90%;
+  width: $table-width;
 }
 
-.title{
-  &_text{
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-  }
-}
+
 
 .alarmed{
   color: #F76346;
@@ -87,23 +83,6 @@
   font-size: 1.1em;
 }
 
-.action.icon{
-  cursor: pointer;
-  transition-duration: .2s;
-  &.favour{
-    &.active{
-      &:hover{
-        color: black !important;
-      }
-    }
-  }
-  &.delete, &.unactive{
-    &:hover{
-      color: red !important;
-    }
-  }
-}
-
 .deleting{
   opacity: 0;
   animation: fading .3s ease-in forwards;
@@ -117,6 +96,25 @@
     pointer-events: none;
     &:hover{
       color: $disable-color !important;
+    }
+  }
+}
+
+
+.mobile-table{
+  overflow: auto;
+  width: 100%;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-around;
+  row-gap: 24px;
+  padding: 24px 0;
+  .todo-card{
+    width: 48%;
+  }
+  @media (max-width: 660px){
+    .todo-card{
+      width: 90%;
     }
   }
 }

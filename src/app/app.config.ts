@@ -15,6 +15,8 @@ export const appConfig: ApplicationConfig = {
     ToDoService,
     ValidationService,
     DatePipe,
+    BrowserModule,
+    BrowserAnimationsModule,
     provideAnimations()
   ]
 };
