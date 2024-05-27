@@ -1,5 +1,6 @@
 <div class="add-form">
   <ng-container [ngTemplateOutlet]="header"></ng-container>
+  <ng-container [ngTemplateOutlet]="backButton"></ng-container>
   @for (field of inputFields; track $index) {
     <ng-container [ngSwitch]="field.inputType">
       <ng-container *ngSwitchCase="'textarea'" [ngTemplateOutlet]="textField" [ngTemplateOutletContext]="{inputField: field, control: creationForm.get(field.name)}">
@@ -77,4 +78,11 @@
     <button class="button create" mat-raised-button (click)="save()" [disabled]="disableSaveButton$ | async">Create</button>
     <button class="button cancel" mat-raised-button (click)="reset()">Cancel</button>
   </div>
+</ng-template>
+
+
+<ng-template #backButton>
+    <button class="button back" mat-icon-button (click)="back()">
+      <mat-icon>keyboard_return</mat-icon>
+    </button>
 </ng-template>

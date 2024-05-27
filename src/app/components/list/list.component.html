@@ -20,7 +20,7 @@
 </div>
 
 <ng-template #todoTable let-todoList="todoList" let-tType="tType">
-  <div class="table">
+  <div class="table" *ngIf="todoList?.length; else fallBack">
 
     <ng-container
       [ngTemplateOutlet]="todosMobileTable"
@@ -114,4 +114,8 @@
 
 <ng-template #tableTitle let-text="text">
   <div class="table-title">{{text}}</div>
+</ng-template>
+
+<ng-template #fallBack let-text="text">
+  <app-fall-back>{{text}}</app-fall-back>
 </ng-template>

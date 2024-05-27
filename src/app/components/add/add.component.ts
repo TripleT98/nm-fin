@@ -1,5 +1,5 @@
 import { Component, OnInit, OnDestroy, TemplateRef } from '@angular/core';
-import { CommonModule, DatePipe } from '@angular/common';
+import { CommonModule, DatePipe, Location  } from '@angular/common';
 import { Router } from '@angular/router';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { MatModule } from '@shared/modules/mat.module';
@@ -76,6 +76,7 @@ export class AddComponent implements OnInit, OnDestroy {
     private datePipe: DatePipe,
     private validationS: ValidationService,
     private router: Router,
+    private location: Location,
   ){
   }
 
@@ -108,6 +109,10 @@ export class AddComponent implements OnInit, OnDestroy {
     const pickedDateTime = new Date(expirationDate.getTime() + msTime);
     this.todoS.createTodo(title, pickedDateTime)
     this.router.navigate(['list']);
+  }
+
+  protected back(){
+    this.location.back()
   }
 
 }

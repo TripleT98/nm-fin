@@ -11,13 +11,14 @@ import { ListType } from '@shared/models/list-type.model';
 import { PipesModule } from '@shared/modules/pipes/pipes.module';
 import { DirectivesModule } from '@shared/modules/directives/directives.module';
 import { EAdaptiveSize } from '@shared/models/adaptive-size';
-import { TimerComponent } from './timer/timer.component';
-import { ListItemComponent } from './list-item/list-item.component';
+import { FallBackComponent } from '@components/fall-back/fall-back.component'
+import { TimerComponent } from '@components/list/timer/timer.component';
+import { ListItemComponent } from '@components/list/list-item/list-item.component';
 
 @Component({
   selector: 'app-list',
   standalone: true,
-  imports: [ CommonModule, MatModule, PipesModule, TimerComponent, ListItemComponent, DirectivesModule ],
+  imports: [ CommonModule, MatModule, PipesModule, TimerComponent, ListItemComponent, FallBackComponent, DirectivesModule ],
   templateUrl: './list.component.html',
   styleUrls: ['./general.scss', './list.component.scss'],
 })
