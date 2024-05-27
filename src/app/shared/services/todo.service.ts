@@ -9,7 +9,7 @@ const minute = 60_000;
 const hour = 3_600_000;
 const day = 3_600_000 * 24;
 
-
+// Для того что-бы не создавать в ручную
 const testTodos = [
   new ToDo('Нулевой', new Date(new Date().getTime() + minute / 2)),
   new ToDo('Первый', new Date(new Date().getTime() + hour)),

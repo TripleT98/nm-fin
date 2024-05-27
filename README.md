@@ -25,3 +25,5 @@ Run `ng e2e` to execute the end-to-end tests via a platform of your choice. To u
 ## Further help
 
 To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI Overview and Command Reference](https://angular.io/cli) page.
+
+В ./src/app/shared/services//todo.service.ts в конструкторе класса можно расскомментировать вызов функции setTodos что бы наполнить хранилище данными, далле после запуска ее ОБЯЗАТЕЛЬНО нужно убрать\закомментировать, что-бы не перезаписывать состояние. Спасибо за внимание!
