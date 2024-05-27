@@ -1,18 +1,20 @@
 import { Pipe, PipeTransform } from '@angular/core';
+import { DatePipe } from '@angular/common';
 import { ToDoService } from '@shared/services/todo.service';
 import { ToDo } from '@shared/models/todo.model';
 import { Observable, timer, of } from 'rxjs';
 import { map, mergeMap, filter, tap, startWith } from 'rxjs/operators';
 
 @Pipe({
-  name: 'getTime'
+  name: 'getTime$'
 })
 export class GetTimePipe implements PipeTransform {
 
   private readonly todos$: Observable<ToDo[]> = this.todoS.observer$;
 
   constructor(
-    private todoS: ToDoService
+    private todoS: ToDoService,
+    private datePipe: DatePipe
   ){
   }
 
@@ -21,12 +23,13 @@ export class GetTimePipe implements PipeTransform {
       mergeMap(_ => this.todos$),
       map(todos => todos.find(todo => todo.id === todoId)),
       filter(todo => !!todo),
-      map(todo => this.getTimeStr(todo?.getTimeLeft() || 0))
+      map(todo => this.getTimeStr(todo || {} as ToDo))
     )))
   }
 
   //Время в миллисекнудах
-  getTimeStr(ms: number): TimeInfo {
+  getTimeStr(todo: ToDo): TimeInfo {
+    const ms = todo.getTimeLeft() || 0;
     const isExpires = ms < 3_600_000;
     if (ms <= 0) {
       return {
@@ -36,6 +39,13 @@ export class GetTimePipe implements PipeTransform {
       };
     }
     var hours = ms / (1000*60*60);
+    if (hours >= 24) {
+      return {
+        timeString: this.datePipe.transform(todo.deadline) || '',
+        msTime: todo.deadline.getTime(),
+        isExpires: false
+      }
+    }
     var absoluteHours = Math.floor(hours);
     var h = absoluteHours > 9 ? absoluteHours : '0' + absoluteHours;
 

@@ -9,11 +9,12 @@ import { ActivatedRoute } from '@angular/router';
 import { TableType } from '@shared/models/table-type.model';
 import { ListType } from '@shared/models/list-type.model';
 import { PipesModule } from '@shared/modules/pipes/pipes.module';
+import { TimerComponent } from './timer/timer.component';
 
 @Component({
   selector: 'app-list',
   standalone: true,
-  imports: [ CommonModule, MatModule, PipesModule ],
+  imports: [ CommonModule, MatModule, PipesModule, TimerComponent ],
   templateUrl: './list.component.html',
   styleUrl: './list.component.scss',
 })

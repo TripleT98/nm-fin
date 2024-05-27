@@ -1,0 +1,6 @@
+<span
+  *ngLet="todoId | getTime$ | async as timeLeft"
+  [ngClass]="{alarmed: timeLeft.isExpires}"
+>
+  {{timeLeft.timeString}}
+</span>

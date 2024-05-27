@@ -7,7 +7,7 @@ export class ToDo {
   private _title: string;
   private _deadline: Date;
   private _isFavorite: boolean = false;
-  private _isDone: boolean = false;
+  private _isExpired: boolean = false;
   public readonly createdAt: Date;
 
   constructor(
@@ -22,6 +22,7 @@ export class ToDo {
     this.id = id || Math.random() * deadline.getTime();
     this._isFavorite = isFavorite || false;
     this.createdAt = createdAt || new Date();
+    this.getTimeLeft();
   }
 
   public set title(text: string) {
@@ -48,16 +49,20 @@ export class ToDo {
     return this._isFavorite;
   }
 
-  public set isDone(isDone: boolean) {
-    this.isDone = isDone;
+  public set isExpired(isExpired: boolean) {
+    this._isExpired = isExpired;
   }
 
-  public get isDone(): boolean {
-    return this._isDone;
+  public get isExpired(): boolean {
+    return this._isExpired;
   }
 
   public getTimeLeft(): number {
-    return this.deadline.getTime() - (new Date()).getTime();
+    const timeLeft = this.deadline.getTime() - (new Date()).getTime();
+    if (timeLeft <= 0) {
+      this.isExpired = true;
+    }
+    return timeLeft;
   }
 
   public doesItEndToday(): boolean {

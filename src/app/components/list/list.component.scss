@@ -109,6 +109,18 @@
   animation: fading .3s ease-in forwards;
 }
 
+.isExpired{
+  *{
+    color: $disable-color !important;
+  }
+  .action.icon.favour{
+    pointer-events: none;
+    &:hover{
+      color: $disable-color !important;
+    }
+  }
+}
+
 @keyframes fading {
   from{
     height: 52px;

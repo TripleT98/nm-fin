@@ -5,11 +5,13 @@ import { Observable, interval, BehaviorSubject } from "rxjs";
 import { filter, map, delay, debounceTime, mergeMap, take, startWith, tap } from 'rxjs/operators'
 
 ////////
+const minute = 60_000;
 const hour = 3_600_000;
 const day = 3_600_000 * 24;
 
 
 const testTodos = [
+  new ToDo('Нулевой', new Date(new Date().getTime() + minute / 2)),
   new ToDo('Первый', new Date(new Date().getTime() + hour)),
   new ToDo('Второй', new Date(new Date().getTime() + hour * 3)),
   new ToDo('Третий', new Date(new Date().getTime() + day)),
